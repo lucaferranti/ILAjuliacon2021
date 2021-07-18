@@ -50,36 +50,6 @@ html"""
 <div class="right">
 <img width="450" src="https://raw.githubusercontent.com/lucaferranti/IntervalLinearAlgebra.jl/main/docs/src/assets/logo.png"></div></div>"""
 
-# ╔═╡ c5c83a1e-b1e3-4e7b-b769-ad899773b147
-md"""
-## Overview
-
-1. Why intervals?
-2. Interval matrices
-3. Interval linear systems
-3. Exact characterization of the solution
-4. Computing an enclosure of the solution
-5. Preconditioning
-"""
-
-# ╔═╡ 095c8804-77b2-445d-a8a0-cca41d2fbb42
-md"""
-## Why intervals?
-"""
-
-# ╔═╡ a35b1efa-ccde-4f14-8de0-375fe702074b
-md"""
-- Computations in traditional floating point arithmetic output an approximate value, which is *hopefully* close to the correct answer
-- Interval arithmetic uses *intervals* instead of point numbers and performs *rigorous* computation, meaning that operations are defined in a way that the final interval is guaranteed to contain the correct solution.
-- This package is built on top of [IntervalArithmetic.jl](https://github.com/juliaintervals/IntervalArithmetic.jl) to perform interval computations.
-"""
-
-# ╔═╡ b43efd77-16b7-4d1d-88b8-8607f41ddb00
-html"""
-<center>
-<img width="400" src="https://raw.githubusercontent.com/JuliaIntervals/juliaintervals.github.io/master/_assets/minimal-mistakes/test.png"></center>
-"""
-
 # ╔═╡ c3a5fd72-9a9d-45f3-aaf3-bd61637d286c
 md"""
 ## Interval matrices
@@ -94,26 +64,11 @@ for example
 # ╔═╡ f2cff36e-9136-4eb1-acff-c97af31c2450
 AA = [1..2 3..4; 5..6 7..8]
 
-# ╔═╡ cf233d7c-b590-4c4f-87e2-7026638f3ba4
-md"""
-##
-An interval matrix can be also be represented as $\mathbf{A}=[\underline{A}, \overline{A}]$, where $\underline{A}$ is the matrix of lower bounds and $\overline{A}$ is the matrix of upper bounds.
-"""
-
-# ╔═╡ 836ff66a-0626-4722-84bf-2d5e3ec6bf82
-AA
-
-# ╔═╡ 75a3c103-69c1-466a-a2d0-7c42044377bd
-inf.(AA)
-
-# ╔═╡ 980a4979-af7f-4241-a01a-73201f6c9fa4
-sup.(AA)
-
 # ╔═╡ 286f40a2-840d-431b-a531-fe9e09dc55f1
 md"""
 ##
 
- $\mathbf{A}$ can also be represented in *midpoint notation* $A_c\pm A_\Delta$, where $A_c$ is the *midpoint matrix* and $A_\Delta$ is the radius matrix.
+ $\mathbf{A}$ can also be represented in *midpoint-radius* notation $A_c\pm A_\Delta$, where $A_c$ is the *midpoint matrix* and $A_\Delta$ is the *radius matrix*.
 """
 
 # ╔═╡ 97e498f5-2e0c-4139-9774-86f58d59d511
@@ -130,7 +85,7 @@ md"""
 ##
 
 ### Regular matrices
-We say that an interval $\mathbf{A}$ is **regular** if all $A\in\mathbf{A}$ are invertible. Otherwise, the interval matrix is **singular**.
+We say that an interval matrix $\mathbf{A}$ is **regular** if all $A\in\mathbf{A}$ are invertible. Otherwise, the interval matrix is **singular**.
 
 - In general, checking for regularity or singularity is computationally expensive.
 """
@@ -172,7 +127,6 @@ $\mathbf{x}=\{x\in\mathbb{R}^n | Ax=b\text{ for some } A\in\mathbf{A}, b\in\math
 # ╔═╡ 3f5a6fed-6175-4459-8be2-9a330cedc938
 md"""
 - If $\mathbf{A}$ is regular, then the solution set is non-empty and bounded.
-- Otherwise it is empty (unsolvable) or unbounded.
 """
 
 # ╔═╡ c223f95a-9885-48ae-b939-4f3fa54a7987
@@ -181,7 +135,7 @@ md"""
 ### Finding the solution set
 
 - How do we solve the square interval linear system $\mathbf{A}\mathbf{x}=\mathbf{b}$?
-- A naive approach might be to use Monte-Carlo, i.e. generate several random real instances from the interval system.
+- A naive approach might be to use Monte Carlo, i.e. generate several random real instances from the interval system.
 - We will use the following as running example
 """
 
@@ -227,7 +181,7 @@ x\in\mathbf{x}\Leftrightarrow|A_cx-b_c|\le A_\Delta|x|+b_\Delta$
 
 - The absolute value is taken elementwise.
 
-- This system of non-linear inequalities can be rewritten as $2^n$ sets of linear inequalities, one for each orthant.
+- We can remove the absolute values by considering one orthant at the time, obtaining $2^n$ systems of linear inequalities.
 
 - Alternatively, the non-linear inequalities can be solved directly using `IntervalConstraintProgramming.jl`
 
@@ -410,6 +364,9 @@ md"""
 - If preconditioning is not specified, the package performs some heuristic checks to decide a precondition strategy.
 """
 
+# ╔═╡ bbd4086e-af3f-4743-b9fb-01559f567560
+solve(A1, b1, GaussianElimination())
+
 # ╔═╡ 1e9bf340-2dca-4602-a60c-b2ccdc9cfb85
 md"""
 ## Conclusions
@@ -421,34 +378,17 @@ md"""
   - Determinant computation
 
 - Ultimate goal: **Linear algebra done rigorously!**
-"""
-
-# ╔═╡ e25acaf2-f0a5-489c-925f-0ff122738542
-md"""
-## Thank you
-
-- Repository: <https://github.com/lucaferranti/IntervalLinearAlgebra.jl>
-- Slides: <https://github.com/lucaferranti/ILAjuliacon2021>
-
-![IntervalLinearAlgebra.jl](https://raw.githubusercontent.com/lucaferranti/IntervalLinearAlgebra.jl/main/docs/src/assets/logo.png)
+- Download the slides: <https://github.com/lucaferranti/ILAjuliacon2021>
 """
 
 # ╔═╡ Cell order:
 # ╟─f403b050-e2e6-11eb-1c44-911de0d748bd
 # ╟─0bc12fe2-4d08-4840-b651-b58df23f0277
 # ╟─c9e05bd9-1d7b-41c0-99dc-29b1c1e20090
-# ╟─c5c83a1e-b1e3-4e7b-b769-ad899773b147
-# ╟─095c8804-77b2-445d-a8a0-cca41d2fbb42
-# ╟─a35b1efa-ccde-4f14-8de0-375fe702074b
-# ╟─b43efd77-16b7-4d1d-88b8-8607f41ddb00
 # ╟─c3a5fd72-9a9d-45f3-aaf3-bd61637d286c
 # ╟─f2cff36e-9136-4eb1-acff-c97af31c2450
-# ╟─cf233d7c-b590-4c4f-87e2-7026638f3ba4
-# ╠═836ff66a-0626-4722-84bf-2d5e3ec6bf82
-# ╠═75a3c103-69c1-466a-a2d0-7c42044377bd
-# ╠═980a4979-af7f-4241-a01a-73201f6c9fa4
 # ╟─286f40a2-840d-431b-a531-fe9e09dc55f1
-# ╠═97e498f5-2e0c-4139-9774-86f58d59d511
+# ╟─97e498f5-2e0c-4139-9774-86f58d59d511
 # ╠═bb878728-d4ca-4c01-a4f7-bf1811a8f5c2
 # ╠═a89ee6e9-565a-46d5-82db-bafb251a2200
 # ╟─4848561e-2336-40fb-a5c6-8705da85c2ee
@@ -491,5 +431,5 @@ md"""
 # ╟─44813e6f-d7a2-47d6-9862-b9fd3e102ee2
 # ╟─1a1b8edf-bc1a-466e-b714-3eb71aa145ce
 # ╟─d8735a5e-8444-4724-9796-a59b37efd0e2
+# ╠═bbd4086e-af3f-4743-b9fb-01559f567560
 # ╟─1e9bf340-2dca-4602-a60c-b2ccdc9cfb85
-# ╟─e25acaf2-f0a5-489c-925f-0ff122738542
